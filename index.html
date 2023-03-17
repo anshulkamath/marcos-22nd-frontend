@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <title>Countdown to Marcos' Birthday</title>
+  <meta name="description" content="An advent calendar for Marcos' birthday">
+  <meta name="author" content="Anshul Kamath">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+  <!-- Our CSS -->
+  <link rel="stylesheet" href="css/main.css">
+  <!-- Our fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Nunito:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+</head>
+<body>
+  <div id="page-container">
+    <div id="banner" class="mono">
+      <h1>Marcos' Advent Calendar!</h1>
+    </div>
+    <div id="marcos-intro">
+      <div style="height: 50vh; width: 30%;">
+        <div id="marcos-carousel">
+          <img class="carousel-image" src="resources/marcos-homescreen/marcos-1.jpeg" height="100%">
+          <img class="carousel-image" src="resources/marcos-homescreen/marcos-2.jpeg" height="100%">
+          <img class="carousel-image" src="resources/marcos-homescreen/marcos-3.jpeg" height="100%">
+          <img class="carousel-image" src="resources/marcos-homescreen/marcos-4.jpeg" height="100%">
+          <img class="carousel-image" src="resources/marcos-homescreen/marcos-5.jpeg" height="100%">
+          <img class="carousel-image" src="resources/marcos-homescreen/marcos-6.jpeg" height="100%">
+          <img class="carousel-image" src="resources/marcos-homescreen/marcos-7.jpeg" height="100%">
+        </div>
+      </div>
+      <div id="marcos-blurb" class="nunito">
+        <h2><strong>Welcome!</strong></h2>
+        <p>
+          You, Marcos David Acosta, probably have a few questions (if not, you should).
+          First, why am I addressing you like I would an audience?
+          Second, why didn't you have to solve an incredibly elaborate and well-crafted puzzle to get to this page?
+          And, third, why am I sending this to you on a day that is verifiably not your birthday?
+        </p>
+        <p>
+          You see, this is no ordinary Marcos birthday present.
+          I have gone through the extended toil of making sure that this birthday spectacular is one for the ages.
+          Below, you will be faced with a series of Herculean tasks designed to make you fail.
+          If you somehow find a way to pass all these tests, you will (probably) be rewarded accordingly.
+        </p>
+        <p>
+          Below, you will notice that there is a calendar enumerating all the days between June 1, 2023 and June 14, 2023.
+          It should be noted, however, that this is no ordinary calendar. No, no, no. This is an ~advent~ calendar.
+          Don't worry, though. I have been informed that even the smallest advent calendar can leave you shaking in your boots.
+          Hence, I have added some extra protection for both of our sakes - you can only continue to the next day of the calendar under two conditions:<br>
+          &emsp;&emsp;1. You have successfully completed the previous challenge and submitted the code, and<br>
+          &emsp;&emsp;2. It has passed 12 am (EST) on the given day.
+        </p>
+      </div>
+    </div>
+    <div id="advent-calendar-container" class="nunito">
+      <table width="100%" height="100%">
+        <tr>
+          <th>Sunday</th>
+          <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+          <th>Saturday</th>
+        </tr>
+        <tr>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+          <td>7</td>
+          <td>8</td>
+          <td>9</td>
+          <td>10</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>12</td>
+          <td>13</td>
+          <td>14</td>
+          <td>15</td>
+          <td>16</td>
+          <td>17</td>
+        </tr>
+        <tr>
+          <td>18</td>
+          <td>19</td>
+          <td>20</td>
+          <td>21</td>
+          <td>22</td>
+          <td>23</td>
+          <td>24</td>
+        </tr>
+        <tr>
+          <td>25</td>
+          <td>26</td>
+          <td>27</td>
+          <td>28</td>
+          <td>29</td>
+          <td>30</td>
+          <td>-</td>
+        </tr>
+      </table>
+    </div>
+    </div>
+  </div>
+  
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+  <!-- MomentJS -->
+  <script type = "text/JavaScript" src = " https://MomentJS.com/downloads/moment.js"></script>
+
+  <!-- Script Files -->
+  <script src="js/carousel.js"></script>
+  <script src="js/calendar.js"></script>
+</body>
+</html>

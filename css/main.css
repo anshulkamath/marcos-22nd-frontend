@@ -1,0 +1,93 @@
+body {
+  background-color: burlywood;
+  display: flex;
+  flex-direction: column;
+}
+
+#page-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.nunito {
+  font-family: Nunito;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+#banner {
+  height: 10vh;
+  width: 100vw;
+  text-align: center;
+  padding: 20px;
+  margin: 2vh;
+}
+
+#marcos-intro {
+  top: 10vh;
+  display: flex;
+  flex-direction: row;
+  width: 75vw;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  align-self: center;
+}
+
+#marcos-carousel {
+  position: relative;
+  height: 50vh;
+  width: 40vw;
+  display: flex;
+  text-align: center;
+}
+
+#marcos-carousel > img {
+  position: absolute;
+  align-self: center;
+  border-radius: 20px;
+  z-index: 0;
+  transition: all .3s ease-in-out;
+}
+
+#marcos-carousel > img:hover {
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.22) 0px 19px 43px;
+}
+
+#marcos-carousel > img.carousel-right-hover {
+  transform: rotateZ(15deg);
+  z-index: 1;
+  transform-origin: bottom center;
+}
+
+#marcos-carousel > img.carousel-left-hover {
+  transform: rotateZ(-15deg);
+  z-index: 1;
+  transform-origin: bottom center;
+}
+
+#marcos-carousel > img.carousel-focus {
+  z-index: 2;
+}
+
+#marcos-blurb {
+  font-size: 1vw;
+  padding: 2vh;
+  background-color: antiquewhite;
+  border-radius: 20px;
+  height: 100%;
+}
+
+#advent-calendar-container {
+  width: 75vw;
+  border: 2px solid black;
+  align-self: center;
+  margin: 2vw;
+  border-radius: 2vw;
+  text-align: center;
+  background-color: antiquewhite;
+  padding: 2vh;
+}
