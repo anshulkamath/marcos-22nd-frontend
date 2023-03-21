@@ -1,0 +1,149 @@
+body {
+  background-color: black;
+}
+
+#spotify-game-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  color: white;
+  height: 100vh;
+  width: 100vw;
+}
+
+.nunito {
+  font-family: Nunito;
+}
+
+input, textarea {
+  text-align: center;
+  font-size: 3em;
+  border-radius: 1vmax;
+  border: 3px solid black;
+  outline: none;
+  color: green
+}
+
+input:focus, textarea:focus {
+  outline: none !important;
+  border: 3px solid green;
+}
+
+button {
+  border: none;
+  background-color: green;
+  font-family: Nunito;
+  font-size: 2em;
+  padding: 1vh;
+  border-radius: 1vmax;
+  color: white;
+}
+
+button.off, button.off:hover {
+  background-color: grey;
+  cursor: default;
+}
+
+#modal-container {
+  visibility: hidden;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  opacity: 1;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#modal-container.active {
+  visibility: visible;
+  text-align: center;
+}
+
+#modal-body {
+  visibility: hidden;
+  width: 50vw;
+  background-color: white;
+  padding: 2vh;
+  border-radius: 1vmax;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  justify-content: space-around;
+  box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px;
+}
+
+#modal-text {
+  margin-bottom: 2vh;
+}
+
+#modal-body > div p {
+  text-align: left;
+}
+
+#modal-body.active {
+  visibility: visible;
+}
+
+#spotify-game {
+  text-align: center;
+}
+
+#name-form > textarea {
+  width: 35vw;
+  height: 10vh;
+  margin: 1vw;
+  resize: none;
+}
+
+#date-form > input {
+  width: 10vw;
+  margin: 1vw;
+}
+
+#button-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  justify-content: space-evenly;
+}
+
+#button-row > button {
+  width: 15vw;
+  margin: 1vw;
+}
+
+.shake {
+  animation: shake 0.3s;
+  animation-iteration-count: 1;
+  border-color: red;
+}
+
+@keyframes shake {
+  0% { transform: translate(2px) } 
+  20% { transform: translate(-2px) }
+  40% { transform: translate(2px) }
+  60% { transform: translate(-2px) }
+  80% { transform: translate(2px) }
+  100% { transform: translate(-2px) }
+}
+
+.wrong-answer {
+  color: red;
+}
+
+#scoreboard {
+  background-color: green;
+  border-radius: 1vmax;
+  padding: 1vh;
+}
+
+#playlist-input {
+  width: 100%;
+}

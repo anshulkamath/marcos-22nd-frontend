@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Spotify Minigame</title>
+  <meta name="description" content="Spotify Mini-Game">
+  <meta name="author" content="Anshul Kamath">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+  <!-- Our CSS -->
+  <link rel="stylesheet" href="../css/spotify.css">
+  <!-- Our fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Nunito:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <div id="modal-container">
+    <div id="modal-body">
+      <h2 class="nunito">Welcome to Memory Lane!</h1>
+      <div id="modal-text" class="nunito">
+        <p>
+          Hello you music connesieur. It seems that you've somehow made your way to this challenge.
+          Luckily for you, I've been pleased with your progress thus far.
+          To show my appreciation and respect for your tenacity, I've decided to give you a `fun` challenge.
+          Welcome to my newest creation, Memory Lane.
+        </p>
+        <p>
+          This game is meant to test your nostalgic connection to your Spotify playlist.
+          The game proceeds as follows: when you begin, a song will start playing.
+          Your job is to try and guess both the name of the song as well as the date it was added to your playlist.
+          Both the name and the date contribute 5 points to your total score.
+          Also, I've tried to be ~accomodating~ by using a dynamic Levenshtein-distance threshold for naming.
+        </p>
+        <p>
+          Furthermore, you have the opportunity to get bonus points.
+          There will be up to three durations of the song: 1 second, 5 seconds, and 15 seconds.
+          If you are able to guess the song in 1 second, an additional 5 points will be added to your score.
+          If you are able to guess the song in 5 seconds, then an additional point will be added to your score.
+        </p>
+        <p>
+          You may be asking `So when do I win?`
+          Well, my young duckling, that's the beauty of the game... it's up to me to decide!
+          Luckily time flies when you're having fun, because this is gonna take a while.
+          So hunker down and start playing!
+        </p>
+        <p>
+          P.S. If you're not Marcos, then feel free to enter a (public) Spotify playlist ID in the form below to customize the game to
+          your liking!
+        </p>
+        <input id="playlist-input" type="text" placeholder="0v0OpK2jpvsOv1EKjcq6lv">
+      </div>
+      <button id="modal-close" class="nunito">Let's Begin!</button>
+    </div>
+  </div>
+  <div id="spotify-game-container">
+    <div id="scoreboard"></div>
+    <div id="spotify-game">
+      <div id="name-form">
+        <textarea id="name-input" type="text" placeholder="Song Title" class="nunito" wrap="soft"
+          data-enable-grammarly="false"></textarea>
+      </div>
+      <div id="date-form">
+        <input type="text" id="month-input" placeholder="MM" class="nunito" />
+        <input type="text" id="day-input" placeholder="DD" class="nunito" />
+        <input type="text" id="year-input" placeholder="YY" class="nunito" />
+      </div>
+      <div id="button-row">
+        <button id="more-time" type="submit">More Time</button>
+        <button id="guess" type="submit">Submit</button>
+      </div>
+    </div>
+    <div></div>
+  </div>
+
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+  <!-- MomentJS -->
+  <script type="text/JavaScript" src="https://MomentJS.com/downloads/moment.js"></script>
+
+  <!-- LoDash -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"
+    referrerpolicy="no-referrer"></script>
+
+  <!-- Script Files -->
+  <script src="../js/spotify.js"></script>
+</body>
