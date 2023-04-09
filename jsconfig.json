@@ -1,7 +1,10 @@
 {
   "typeAcquisition": {
       "include": [
-          "jquery"
+          "jquery",
+          "moment",
+          "lodash",
+          "d3-color"
       ]
   }
 }
