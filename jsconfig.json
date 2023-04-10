@@ -2,9 +2,8 @@
   "typeAcquisition": {
       "include": [
           "jquery",
-          "moment",
-          "lodash",
-          "d3-color"
+          "luxon",
+          "lodash"
       ]
   }
 }
