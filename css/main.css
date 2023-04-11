@@ -1,7 +1,116 @@
+* {
+  --primary: burlywood;
+  --secondary: antiquewhite;
+}
+
 body {
-  background-color: burlywood;
+  background-color: var(--primary);
   display: flex;
   flex-direction: column;
+}
+
+.primary {
+  background-color: var(--primary);
+}
+
+.secondary {
+  background-color: var(--secondary);
+}
+
+#modal-container {
+  position: fixed;
+  display: none;
+  
+  height: 100vh;
+  width: 100vw;
+
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  top: 0;
+  left: 0;
+  
+  background-color: rgba(0, 0, 0, 0.22);
+
+  z-index: 10;
+}
+
+#modal-container.opened {
+  display: flex;
+}
+
+#modal-body {
+  display: flex;
+
+  width: 40vw;
+  height: 45vh;
+  
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  border-radius: 2vh;
+  padding: 2vh;
+
+  background-color: var(--secondary);
+}
+
+#modal-description {
+  text-align: center;
+  margin-bottom: 1vh;
+}
+
+#start-puzzle {
+  font-size: 1.5em;
+  cursor: pointer;
+  margin: 1vh;
+  color: blue;
+}
+
+#modal-input {
+  margin: 1vh;
+}
+
+#modal-hint:hover {
+  background-color: antiquewhite;
+}
+
+.modal-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 1vh;
+}
+
+input {
+  text-align: center;
+  font-size: 1.5em;
+  border-radius: 1vmax;
+  border: 2px solid black;
+  outline: none;
+  color: var(--primary);
+}
+
+input:focus {
+  outline: none !important;
+  border: 2px solid var(--primary);
+}
+
+button {
+  border: none;
+  background-color: var(--primary);
+  font-family: Nunito;
+  font-size: 1.5em;
+  padding: 0.5vh;
+  border-radius: 1vmax;
+  color: white;
+}
+
+button.off, button.off:hover {
+  background-color: grey;
+  cursor: default;
 }
 
 #page-container {
@@ -76,7 +185,7 @@ body {
 #marcos-blurb {
   font-size: 1vw;
   padding: 2vh;
-  background-color: antiquewhite;
+  background-color: var(--secondary);
   border-radius: 20px;
   height: 100%;
 }
@@ -88,7 +197,7 @@ body {
   margin: 2vw;
   border-radius: 2vw;
   text-align: center;
-  background-color: antiquewhite;
+  background-color: var(--secondary);
   padding: 2vh;
 }
 
@@ -112,4 +221,5 @@ table {
 .clickable {
   cursor: pointer;
   color: blue;
+  text-decoration: none;
 }
