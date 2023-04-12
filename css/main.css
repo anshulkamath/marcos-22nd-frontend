@@ -31,7 +31,7 @@ body {
   top: 0;
   left: 0;
   
-  background-color: rgba(0, 0, 0, 0.22);
+  background-color: rgba(0, 0, 0, 0.44);
 
   z-index: 10;
 }
@@ -43,8 +43,7 @@ body {
 #modal-body {
   display: flex;
 
-  width: 40vw;
-  height: 45vh;
+  max-width: 50vw;
   
   flex-direction: column;
   justify-content: space-between;
@@ -222,4 +221,20 @@ table {
   cursor: pointer;
   color: blue;
   text-decoration: none;
+}
+
+
+.shake {
+  animation: shake 0.3s;
+  animation-iteration-count: 1;
+  border-color: red;
+}
+
+@keyframes shake {
+  0% { transform: translate(2px) } 
+  20% { transform: translate(-2px) }
+  40% { transform: translate(2px) }
+  60% { transform: translate(-2px) }
+  80% { transform: translate(2px) }
+  100% { transform: translate(-2px) }
 }

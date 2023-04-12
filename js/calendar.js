@@ -3,6 +3,8 @@ const DEBUG = true
 const DateTime = luxon.DateTime
 const key = 'marcos-22nd'
 
+const puzzlePopulators = []
+
 const makeAuthorizedGet = async (path, keyword) =>
   fetch(`${endpoint}/${path}`, {
     method: 'GET',
@@ -21,7 +23,8 @@ const verifyDate = (day) => {
 
 const handlePuzzleSubmit = async (currentKeyword) => {
   const input = $('#modal-input')
-  if (!input.val()) {
+  const keywordGuess = input.val().toLowerCase()
+  if (!keywordGuess) {
     input.toggleClass('shake')
     setTimeout(() => input.toggleClass('shake'), 500)
     return
@@ -33,14 +36,21 @@ const handlePuzzleSubmit = async (currentKeyword) => {
       'Content-Type': 'application/json',
       Authorization: currentKeyword,
     },
-    body: JSON.stringify({ keyword: input.val() }),
+    body: JSON.stringify({ keyword: keywordGuess }),
   })
 
-  if (response.status !== 200) {
-    console.error('The wrong keyword was given')
-  }
+  const data = await response.json()
 
-  console.log('Success!')
+  const alertType = response.status === 200 ? 'alert-success' : 'alert-danger'
+  if ($('#modal-alert').length) {
+    $('#modal-alert').remove()
+  }
+  $('#modal-body').append(`<div id="modal-alert" role="alert" class="alert ${alertType}">${data.message}</div>`)
+
+  if (response.status === 200) {
+    window.localStorage.setItem('marcos-22nd', keywordGuess)
+    $('#modal-submit').removeClass('primary').addClass('btn-secondary disabled')
+  }
 }
 
 const getPuzzles = async () => {
@@ -63,7 +73,13 @@ const getPuzzles = async () => {
 
     const elem = $(`#puzzle-${i}`)
 
-    elem.on('click', () => {
+    if (elem.attr('added')) {
+      console.log(elem.attr('added'))
+      return
+    }
+
+    elem.on('click', (e) => {
+      e.preventDefault()
       $('#modal-header').text(title)
       $('#modal-description').text(description)
       $('#start-puzzle').on('click', async () => {
@@ -77,7 +93,6 @@ const getPuzzles = async () => {
         makeAuthorizedGet('puzzle', currentKeyword)
       })
 
-      
       if (i == items.puzzleInfo.length - 1) {
         $('#modal-submit').on('click', () => handlePuzzleSubmit(currentKeyword))
       } else {
@@ -94,11 +109,21 @@ const getPuzzles = async () => {
           var $this = $(this) // caching $(this)
           $this.text($this.data('defaultText'))
         })
+
       $('#modal-container').toggleClass('opened')
+
+      elem.attr('added', true)
     })
 
-    elem.toggleClass('clickable')
+    elem.addClass('clickable')
   })
+}
+
+const closeModal = () => {
+  $('#modal-container').toggleClass('opened')
+  getPuzzles()
+  $('#modal-input').val('')
+  $('#modal-alert').remove()
 }
 
 const setup = async () => {
@@ -106,12 +131,18 @@ const setup = async () => {
     window.localStorage.setItem(key, 'starter pack')
   }
 
+  $(document).on('keypress', (e) => {
+    if (e.key === "Escape" && $('#modal-container').hasClass('opened')) {
+      closeModal()
+    }
+  })
+
   $('#modal-container').on('click', function (e) {
     if (e.target !== this) {
       return
     }
 
-    $('#modal-container').toggleClass('opened')
+    closeModal()
   })
 
   // populate calendar with puzzle names
