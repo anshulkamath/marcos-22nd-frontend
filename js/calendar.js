@@ -4,6 +4,7 @@ const DateTime = luxon.DateTime
 const key = 'marcos-22nd'
 
 const puzzlePopulators = []
+const puzzleData = [null]
 
 const makeAuthorizedGet = async (path, keyword) =>
   fetch(`${endpoint}/${path}`, {
@@ -53,33 +54,20 @@ const handlePuzzleSubmit = async (currentKeyword) => {
   }
 }
 
-const getPuzzles = async () => {
+const populateButtons = () => {
   const currentKeyword = window.localStorage.getItem(key)
-
-  const response = await makeAuthorizedGet('puzzleMetadata', currentKeyword)
-
-  if (response.status !== 200) {
-    console.error('Error occurred when fetching next puzzle metadata!')
-    return
-  }
-
-  const items = await response.json()
-  console.log(items)
-
-  items.puzzleInfo.forEach(({ title, description, hint, redirect }, i) => {
+  
+  puzzleData.forEach((datum, i) => {
     if (i === 0) {
       return
     }
 
+    const { title, description, redirect, hint } = datum
+
     const elem = $(`#puzzle-${i}`)
 
-    if (elem.attr('added')) {
-      console.log(elem.attr('added'))
-      return
-    }
-
-    elem.on('click', (e) => {
-      e.preventDefault()
+    elem.unbind('click').on('click', function () {
+      console.log(this, elem)
       $('#modal-header').text(title)
       $('#modal-description').text(description)
       $('#start-puzzle').on('click', async () => {
@@ -90,10 +78,13 @@ const getPuzzles = async () => {
           return
         }
 
-        makeAuthorizedGet('puzzle', currentKeyword)
+        const response = await makeAuthorizedGet(`puzzle?day=${i}`, currentKeyword)
+        const blob = await response.blob()
+        const _url = URL.createObjectURL(blob)
+        window.open(_url, target='_blank')
       })
 
-      if (i == items.puzzleInfo.length - 1) {
+      if (i == puzzleData.length - 1) {
         $('#modal-submit').on('click', () => handlePuzzleSubmit(currentKeyword))
       } else {
         $('#modal-submit').removeClass('primary').addClass('btn-secondary disabled')
@@ -116,6 +107,32 @@ const getPuzzles = async () => {
     })
 
     elem.addClass('clickable')
+  })
+}
+
+const getPuzzles = async () => {
+  const currentKeyword = window.localStorage.getItem(key)
+
+  const response = await makeAuthorizedGet('puzzleMetadata', currentKeyword)
+
+  if (response.status !== 200) {
+    console.error('Error occurred when fetching next puzzle metadata!')
+    return
+  }
+
+  const items = await response.json()
+
+  items.puzzleInfo.forEach(({ title, description, hint, redirect }, i) => {
+    if (i === 0) {
+      return
+    }
+
+    if (i < puzzleData.length) {
+      return
+    }
+
+    puzzleData.push({ title, description, hint, redirect })
+    populateButtons()
   })
 }
 
@@ -152,6 +169,7 @@ const setup = async () => {
   }
 
   const data = await response.json()
+  console.log(data)
   data.forEach((name, i) => {
     if (i === 0) {
       return
