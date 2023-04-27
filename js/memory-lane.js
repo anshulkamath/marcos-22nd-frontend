@@ -1,4 +1,5 @@
-const endpoint = 'http://localhost:8080/spotify'
+const endpointRoot = 'http://localhost:8080'
+const endpoint = `${endpointRoot}/memory-lane/api`
 let playlistId = '0v0OpK2jpvsOv1EKjcq6lv'
 const gracePeriod = 750
 
@@ -12,6 +13,7 @@ const gameFields = [...dateFields, '#name-input']
 const levelDurations = { 1: 1000, 2: 5000, 3: 15000 }
 let previewUrl = ''
 let songId = ''
+let round = 1
 
 const updateScore = (delta) => {
   score += delta
@@ -29,47 +31,46 @@ const checkFilled = () => {
       setTimeout(() => {
         $(e).toggleClass('shake')
       }, 500)
-      return;
+      return
     }
   })
 
   return formFilled
 }
 
-const validateDate = () => {
+const validateDate = async () => {
   let date = ''
   let validSubmission = true
 
-  $.each(dateFields, (i, e) => {
-    const currVal = $(e).val()
+  $('#date-form > input').each(function () {
+    const currVal = $(this).val()
 
     if (currVal === '' || isNaN(currVal)) {
       validSubmission = false
-      $(e).toggleClass('shake')
+      $(this).toggleClass('shake')
       setTimeout(() => {
-        $(e).toggleClass('shake')
+        $(this).toggleClass('shake')
       }, 500)
-      return;
+      return
     }
     date += `${currVal}/`
   })
-  
+
   if (!validSubmission) {
-    $.each(dateFields, (i, e) => {
-      $(e).toggleClass(shake)
-      setTimeout(() => {
-        $(e).toggleClass('shake')
-      }, 500)
-    })
     return ''
   }
 
-  const dateRegex = /^([1-9]|0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01]|[0-9])\/(20[0-9][0-3]|[0-9][0-3])$/
+  const dateRegex =
+    /^([1-9]|0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01]|[0-9])\/(20[0-9][0-3]|[0-9][0-3])$/
   date = date.substring(0, date.length - 1)
   if (!date.match(dateRegex)) {
+    $('#date-form > input').toggleClass('shake')
+    setTimeout(() => {
+      $('#date-form > input').toggleClass('shake')
+    }, 500)
     return ''
   }
-  
+
   return new Date(date).toISOString()
 }
 
@@ -84,28 +85,45 @@ const submit = async () => {
 
   const date = validateDate()
   if (!date) {
-    console.log('Date not formatted properly')
+    console.error('Date not formatted properly')
     return
   }
 
   const name = $('#name-input').val()
 
   const requestParams = {
-    type: 'POST',
-    contentType: 'application/json',
-    data: JSON.stringify({
+    method: 'POST',
+    headers: {
+      "Content-Type": 'application/json',
+    },
+    body: JSON.stringify({
       name,
       date,
       id: songId,
-      level
-    })
+      level,
+      round,
+    }),
+  }
+
+  const fetchResponse = await fetch(endpoint, requestParams)
+  console.log(fetchResponse)
+  const response = await fetchResponse.json()
+  
+  if (_.has(response, 'terminated')) {
+    const keyword = _.get(response, 'terminated.keyword')
+    const resourceName = _.get(response, 'resourceName')
+    setCookie('marcos-22nd', keyword, 30)
+    window.location.href = resourceName
+    return
   }
   
-  const response = await $.ajax(endpoint, requestParams)
-  console.log(response)
   const correctDate = new Date(response.correctDate)
-
-  const expected = [correctDate.getMonth(), correctDate.getDate(), correctDate.getFullYear(), response.nameAccepted]
+  const expected = [
+    correctDate.getMonth(),
+    correctDate.getDate(),
+    correctDate.getFullYear(),
+    response.nameAccepted,
+  ]
   $.each(gameFields, (i, e) => {
     if (e === '#name-input') {
       $(e).val(response.correctName)
@@ -127,9 +145,9 @@ const submit = async () => {
     })
 
     updateScore(response.score)
-
     await getSong()
-    
+    round++
+
     level = 1
     $('#more-time').removeClass('off')
 
@@ -148,7 +166,7 @@ const getSong = async (num_retries = 5) => {
     type: 'GET',
     data: {
       playlistId,
-    }
+    },
   }
   const response = await $.ajax(endpoint, requestParams)
 
@@ -173,7 +191,9 @@ const toggleButtons = () => {
 }
 
 const waitAndPlay = (duration) => {
-  setTimeout(() => { playSong(duration) }, gracePeriod)
+  setTimeout(() => {
+    playSong(duration)
+  }, gracePeriod)
 }
 
 const playSong = (milliseconds) => {
@@ -206,20 +226,22 @@ const prepareGame = async () => {
   updateScore(0)
 
   // turn off media keyboard buttons
-  navigator.mediaSession.setActionHandler('play', () => {});
-  navigator.mediaSession.setActionHandler('pause', () => {});
-  navigator.mediaSession.setActionHandler('seekbackward', () => {});
-  navigator.mediaSession.setActionHandler('seekforward', () => {});
-  navigator.mediaSession.setActionHandler('previoustrack', () => {});
-  navigator.mediaSession.setActionHandler('nexttrack', () => {});
+  navigator.mediaSession.setActionHandler('play', () => {})
+  navigator.mediaSession.setActionHandler('pause', () => {})
+  navigator.mediaSession.setActionHandler('seekbackward', () => {})
+  navigator.mediaSession.setActionHandler('seekforward', () => {})
+  navigator.mediaSession.setActionHandler('previoustrack', () => {})
+  navigator.mediaSession.setActionHandler('nexttrack', () => {})
 
   // sets auto-resizing on for textarea
-  $('textarea').each(function () {
-    this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px; overflow-y:hidden;');
-  }).on('input', function () {
-    this.style.height = 0;
-    this.style.height = (this.scrollHeight) + 'px';
-  });
+  $('textarea')
+    .each(function () {
+      this.setAttribute('style', 'height:' + this.scrollHeight + 'px; overflow-y:hidden;')
+    })
+    .on('input', function () {
+      this.style.height = 0
+      this.style.height = this.scrollHeight + 'px'
+    })
 
   // attaches submit action to guess button
   $('#guess').on('click', submit)

@@ -6,14 +6,6 @@ const key = 'marcos-22nd'
 const puzzlePopulators = []
 const puzzleData = [null]
 
-const makeAuthorizedGet = async (path, keyword) =>
-  fetch(`${endpoint}/${path}`, {
-    method: 'GET',
-    headers: {
-      authorization: keyword,
-    },
-  })
-
 const verifyDate = (day) => {
   if (DEBUG) {
     return true
@@ -35,7 +27,6 @@ const handlePuzzleSubmit = async (currentKeyword) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: currentKeyword,
     },
     body: JSON.stringify({ keyword: keywordGuess }),
   })
@@ -49,13 +40,13 @@ const handlePuzzleSubmit = async (currentKeyword) => {
   $('#modal-body').append(`<div id="modal-alert" role="alert" class="alert ${alertType}">${data.message}</div>`)
 
   if (response.status === 200) {
-    window.localStorage.setItem('marcos-22nd', keywordGuess)
+    setCookie(key, keywordGuess, 30)
     $('#modal-submit').removeClass('primary').addClass('btn-secondary disabled')
   }
 }
 
 const populateButtons = () => {
-  const currentKeyword = window.localStorage.getItem(key)
+  const currentKeyword = getCookie(key)
   
   puzzleData.forEach((datum, i) => {
     if (i === 0) {
@@ -67,24 +58,24 @@ const populateButtons = () => {
     const elem = $(`#puzzle-${i}`)
 
     elem.unbind('click').on('click', function () {
-      console.log(this, elem)
       $('#modal-header').text(title)
       $('#modal-description').text(description)
-      $('#start-puzzle').on('click', async () => {
+      $('#start-puzzle').unbind('click').on('click', async function () {
         // if redirect, change window location
         if (redirect) {
-          console.log(redirect)
-          window.open(redirect, '_blank')
+          window.location.href = redirect
           return
         }
 
-        const response = await makeAuthorizedGet(`puzzle?day=${i}`, currentKeyword)
+        console.log(currentKeyword)
+        const response = await fetch(`${endpoint}/puzzle?day=${i}`, currentKeyword)
         const blob = await response.blob()
         const _url = URL.createObjectURL(blob)
         window.open(_url, target='_blank')
       })
 
       if (i == puzzleData.length - 1) {
+        $('#modal-submit').addClass('primary').removeClass('btn-secondary disabled')
         $('#modal-submit').on('click', () => handlePuzzleSubmit(currentKeyword))
       } else {
         $('#modal-submit').removeClass('primary').addClass('btn-secondary disabled')
@@ -93,12 +84,11 @@ const populateButtons = () => {
       $('#modal-hint')
         .on('mouseenter', function () {
           var $this = $(this) // caching $(this)
-          $this.data('defaultText', 'Hint')
           $this.text(hint)
         })
         .on('mouseleave', function () {
           var $this = $(this) // caching $(this)
-          $this.text($this.data('defaultText'))
+          $this.text('Hint')
         })
 
       $('#modal-container').toggleClass('opened')
@@ -111,9 +101,7 @@ const populateButtons = () => {
 }
 
 const getPuzzles = async () => {
-  const currentKeyword = window.localStorage.getItem(key)
-
-  const response = await makeAuthorizedGet('puzzleMetadata', currentKeyword)
+  const response = await fetch(`${endpoint}/puzzleMetadata`)
 
   if (response.status !== 200) {
     console.error('Error occurred when fetching next puzzle metadata!')
@@ -144,8 +132,8 @@ const closeModal = () => {
 }
 
 const setup = async () => {
-  if (!window.localStorage.getItem(key)) {
-    window.localStorage.setItem(key, 'starter pack')
+  if (!getCookie(key)) {
+    setCookie(key, 'starter pack', 30)
   }
 
   $(document).on('keypress', (e) => {
@@ -169,13 +157,16 @@ const setup = async () => {
   }
 
   const data = await response.json()
-  console.log(data)
   data.forEach((name, i) => {
     if (i === 0) {
       return
     }
 
     $(`#puzzle-${i}`).text(`${i}. ${name}`)
+  })
+
+  $('#marcos-bday-link').on('click', async () => {
+    window.location.href = `${endpoint}/marcos-bday`
   })
 }
 

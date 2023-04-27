@@ -69,10 +69,12 @@ body {
 
 #modal-input {
   margin: 1vh;
+  color: black;
 }
 
 #modal-hint:hover {
   background-color: antiquewhite;
+  cursor: default;
 }
 
 .modal-section {
@@ -223,6 +225,13 @@ table {
   text-decoration: none;
 }
 
+#marcos-bday-link {
+  margin-bottom: 5vh;
+  background-color: var(--secondary);
+  padding: 20px;
+  color: black;
+  border: 3px solid black;
+}
 
 .shake {
   animation: shake 0.3s;
