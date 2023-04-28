@@ -14,7 +14,7 @@ const verifyDate = (day) => {
   return DateTime.now() > DateTime.fromJSDate(new Date(`06/${day}/2023`))
 }
 
-const handlePuzzleSubmit = async (currentKeyword) => {
+const handlePuzzleSubmit = async () => {
   const input = $('#modal-input')
   const keywordGuess = input.val().toLowerCase()
   if (!keywordGuess) {
@@ -46,8 +46,6 @@ const handlePuzzleSubmit = async (currentKeyword) => {
 }
 
 const populateButtons = () => {
-  const currentKeyword = getCookie(key)
-  
   puzzleData.forEach((datum, i) => {
     if (i === 0) {
       return
@@ -67,8 +65,7 @@ const populateButtons = () => {
           return
         }
 
-        console.log(currentKeyword)
-        const response = await fetch(`${endpoint}/puzzle?day=${i}`, currentKeyword)
+        const response = await fetch(`${endpoint}/puzzle?day=${i}`)
         const blob = await response.blob()
         const _url = URL.createObjectURL(blob)
         window.open(_url, target='_blank')
@@ -76,9 +73,11 @@ const populateButtons = () => {
 
       if (i == puzzleData.length - 1) {
         $('#modal-submit').addClass('primary').removeClass('btn-secondary disabled')
-        $('#modal-submit').on('click', () => handlePuzzleSubmit(currentKeyword))
+        $('#modal-submit').on('click', () => handlePuzzleSubmit())
+        $('#modal-input').removeAttr('disabled').css('background-color', 'white')
       } else {
         $('#modal-submit').removeClass('primary').addClass('btn-secondary disabled')
+        $('#modal-input').attr('disabled', 'disabled').css('background-color', 'lightgrey')
       }
 
       $('#modal-hint')
@@ -89,7 +88,15 @@ const populateButtons = () => {
         .on('mouseleave', function () {
           var $this = $(this) // caching $(this)
           $this.text('Hint')
-        })
+      })
+
+      $('#modal-input').on('keypress', function (e) {
+        if (e.key !== 'Enter') {
+          return
+        }
+
+        handlePuzzleSubmit()
+      })
 
       $('#modal-container').toggleClass('opened')
 
