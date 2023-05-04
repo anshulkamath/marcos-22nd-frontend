@@ -37,12 +37,16 @@ input:focus {
 
 button {
   border: none;
-  background-color: #23d5ab;
+  background-image: var(--base-gradient);
   font-family: Nunito;
   font-size: 2em;
   padding: 1vh;
   border-radius: 1vmax;
   color: white;
+}
+
+button:hover {
+  background-position: 50%;
 }
 
 button.off, button.off:hover {
@@ -71,7 +75,9 @@ button.off, button.off:hover {
 
 #modal-body {
   visibility: hidden;
-  width: 50vw;
+  width: auto;
+  max-width: 50vw;
+  min-height: 30vh;
   background-color: white;
   padding: 2vh;
   border-radius: var(--border-radius);
@@ -172,6 +178,7 @@ button.off, button.off:hover {
   animation: shake 0.3s;
   animation-iteration-count: 1;
   border: 3px solid red;
+  color: red;
 }
 
 @keyframes shake {
@@ -190,8 +197,36 @@ button.off, button.off:hover {
 }
 
 #scoreboard {
+  display: flex;
   background-color: whitesmoke;
+  flex-wrap: nowrap;
+  align-items: center;
+  flex-direction: row;
+  width: 30vw;
+}
+
+#scoreboard-round {
+  align-self: flex-end;
+  flex: 1;
+  text-align: center;
+  padding-bottom: 1vh;
+  padding-top: 1vh;
+}
+
+#scoreboard-val {
   border: 3px solid black;
-  border-radius: 1vmax;
   padding: 1vh;
+  border-radius: 1vmax;
+  flex: 2;
+  text-align: center;
+  align-self: center;
+}
+
+#scoreboard-diff {
+  flex: 1;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
 }

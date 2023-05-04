@@ -1,6 +1,9 @@
+const endpoint = 'http://localhost:8080/revb'
+
+let round = 1
 let score = 0
 const DEBUG = 0
-
+const DELTA_TAG_WAIT = 2000
 
 const generateRandomEightBitInteger = () => Math.floor(Math.random() * 255)
 const generateRandomColor = () => Array(3).fill(0).map(generateRandomEightBitInteger)
@@ -24,12 +27,28 @@ const convertRGBStringToArray = (cString) => {
   return arr
 }
 
-const updateScore = (delta) => {
-  score += delta
-  $('#scoreboard').html(`<h1 class="nunito floating-animation">Score: ${score}</h1>`)
+const animateScore = (originalScore, delta) => {
+  let current = originalScore
+  $('#scoreboard-val').animate({ current: originalScore }, {
+    duration: delta * 10,
+    easing: 'swing',
+    start: () => {
+    },
+    progress: function () {
+      $(this).text(`Score: ${++current} +${delta}`)
+    },
+    complete: function () {
+      const $this = $(this)
+      $this.text(`Score: ${originalScore + delta} +${delta}`)
+      setTimeout(() => {
+        $this.text(`Score: ${score}`)
+      }, DELTA_TAG_WAIT);
+    }
+  })
 }
 
 const closeModal = () => {
+  resetGame()
   $('#modal-container').toggleClass('active')
   $('#modal-body').toggleClass('active')
 }
@@ -67,12 +86,56 @@ const animateIncorrect = (elem) => {
   elem.toggleClass('shake')
   setTimeout(() => {
     elem.toggleClass('shake')
+    elem.val('')
   }, 500)
 }
 
-const onSubmit = () => {
+const getMemoizedGame = () => {
+  let officialScore = 0
+  let officialRound = 1
+
+  const submitRound = (delta) => {
+    if (officialScore !== score) {
+      console.error('Error: Official score and actual score are not the same')
+      return
+    }
+
+    if (officialRound !== round) {
+      console.error('Error: Official round and actual round are not the same')
+      return
+    }
+  
+    officialScore += delta
+    officialRound++
+
+    score = officialScore
+    round = officialRound
+
+    return officialScore
+  }
+
+  const reset = () => {
+    officialScore = 0
+    officialRound = 1
+
+    score = officialScore
+    round = officialRound
+  }
+
+  return { submitRound, reset }
+}
+
+const { submitRound, reset } = getMemoizedGame()
+
+const onSubmit = async () => {
   const textField = $('#guess-val')
+  textField.trigger('blur')
   if (textField.val() === '') {
+    animateIncorrect(textField)
+    return
+  }
+
+  if (!RegExp(/^[0-9]{1,2}$|^100$/).test(textField.val())) {
     animateIncorrect(textField)
     return
   }
@@ -89,17 +152,79 @@ const onSubmit = () => {
     $('#right-color-box').css('background-color')
   )
 
-  updateScore(100 - Math.abs(predictedScore - expectedScore))
+  const delta = 100 - Math.abs(predictedScore - expectedScore)
+  animateScore(score, delta)
+  submitRound(delta)
+  
+  refreshColorBoxes()
   textField.val('')
 
-  refreshColorBoxes()
+  await sendResponse()
+
+  if (round === 11) {
+    showFailed()
+    return
+  }
+
+  $('#scoreboard-round').text(`${round}/10`)
+}
+
+const sendResponse = async () => {
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    body: JSON.stringify({ score, round }),
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  })
+
+  if (response.status !== 200) {
+    console.error('Unexpected error while trying to reach backend.')
+    return
+  }
+
+  const { complete, keyword } = await response.json()
+  if (complete) {
+    showComplete(keyword)
+    return
+  }
+}
+
+const showComplete = (keyword) => {
+  $('#modal-title').text('Congrats, you\'ve completed the game!').removeClass('floating-animation')
+  $('#modal-text').html(`<h3 class="nunito floating-animation">Keyword: ${keyword}</h3>`)
+  $('#modal-close').text('New Game')
+  $('#modal-container').addClass('active')
+  $('#modal-body').toggleClass('active')
+}
+
+const showFailed = () => {
+  $('#modal-title').text('Game over :(').addClass('floating-animation')
+  $('#modal-text').html(`<h3 class="nunito">Try again (and do better) to get the keyword</h3>`)
+  $('#modal-close').text('Try again')
+  $('#modal-container').addClass('active')
+  $('#modal-body').toggleClass('active')
+}
+
+const resetGame = () => {
+  reset()
+  $('#scoreboard-round').text(`${round}/10`)
+  $('#scoreboard-val').text(`Score: ${score}`)
 }
 
 jQuery(() => {
-  updateScore(0)
+  $('#scoreboard-round').text(`${round}/10`)
+  $('#scoreboard-val').text('Score: 0')
   refreshColorBoxes()
   if (!DEBUG)
     $('div[id^="modal"]').toggleClass('active')
   $('#modal-close').on('click', closeModal)
   $('#submit-button').on('click', onSubmit)
+  $('#guess-val').on('keypress', function (e) {
+    if (e.key !== 'Enter') {
+      return
+    }
+
+    onSubmit()
+  })
 })
