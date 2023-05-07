@@ -55,13 +55,13 @@ const populateButtons = () => {
 
     const elem = $(`#puzzle-${i}`)
 
-    elem.unbind('click').on('click', function () {
+    elem.off('click').on('click', function () {
       $('#modal-header').text(title)
       $('#modal-description').text(description)
       $('#start-puzzle').unbind('click').on('click', async function () {
         // if redirect, change window location
         if (redirect) {
-          window.location.href = redirect
+          window.open(redirect, '_blank')
           return
         }
 
