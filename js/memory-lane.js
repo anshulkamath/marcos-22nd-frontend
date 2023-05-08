@@ -1,4 +1,4 @@
-const endpointRoot = 'http://localhost:8080'
+const endpointRoot = ENDPOINT
 const endpoint = `${endpointRoot}/memory-lane/api`
 let playlistId = '0v0OpK2jpvsOv1EKjcq6lv'
 const gracePeriod = 750

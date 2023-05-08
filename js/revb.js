@@ -1,4 +1,4 @@
-const endpoint = 'http://localhost:8080/revb'
+const endpoint = `${ENDPOINT}/revb`
 
 let round = 1
 let score = 0

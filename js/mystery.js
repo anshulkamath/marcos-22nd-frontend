@@ -1,4 +1,4 @@
-const endpoint = 'http://localhost:8080/rsa'
+const endpoint = `${ENDPOINT}/rsa`
 
 const makeRequest = async () => {
   const requestParams = {

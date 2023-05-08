@@ -1,4 +1,4 @@
-const endpoint = 'http://localhost:8080'
+const endpoint = ENDPOINT
 const DEBUG = true
 const DateTime = luxon.DateTime
 const key = 'marcos-22nd'
