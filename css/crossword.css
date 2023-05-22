@@ -1,0 +1,172 @@
+:root {
+    --num-cols: 15;
+    --num-rows: 15;
+    --container-width: 70vh;
+    --container-height: 70vh;
+    --crossword-font: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.mono {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+html {
+    overflow-x: hidden;
+}
+
+body {
+    overflow-x: hidden;
+    position: relative;
+}
+
+#root-container {
+    width: 100vw;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    overflow-y: hidden;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+#crossword-container {
+    display: grid;
+    grid-template-rows: repeat(var(--num-rows), 0fr);
+    grid-template-columns: repeat(var(--num-cols), 0fr);
+
+    width: fit-content;
+    height: fit-content;
+    font-family: var(--crossword-font);
+}
+
+div.grid-item {
+    width: calc(var(--container-width) / var(--num-rows));
+    height: calc(var(--container-height) / var(--num-cols));
+    border: 0.5px solid gray;
+}
+
+input.grid-item {
+    text-align: center;
+    font-size: 24px;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    cursor: default;
+}
+
+.clue {
+    height: 0%;
+    width: 20%;
+    padding-top: 0.25vh;
+    padding-left: 0.3vh;
+    font-size: 12px;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.grid-item:focus {
+    outline: none;
+    caret-color: transparent;
+}
+
+.grid-item-focused {
+    background-color: #ffda00;
+}
+
+.grid-item-highlighted {
+    background-color: #a7d8ff;
+}
+
+.grid-item-solution {
+    background-color: chartreuse;
+}
+
+.grid-item-disabled {
+    background-color: black;
+}
+
+#clues {
+    width: 40vw;
+    height: 40vw;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+    background-color: lightskyblue;
+    margin-left: 5vh;
+    margin-right: 5vh;
+    
+    padding: 2vh;
+    padding-top: 1vh;
+    border-radius: 2vh;
+
+    align-items: flex-start;
+    padding-top: 2vh;
+
+    -webkit-tap-highlight-color: none;
+}
+
+.no-select {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Old versions of Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.clue-container {
+    width: 48%;
+    height: 100%;
+
+    overflow-y: scroll;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+
+    z-index: 2;
+    font-family: var(--crossword-font);
+}
+
+.clue-container::-webkit-scrollbar {
+    display: none;
+}
+
+.clue-list {
+    margin-block-start: 5vh;
+    z-index: 0;
+}
+
+.clue-header {
+    position: absolute;
+    background-color: lightskyblue;
+    width: inherit;
+    padding: 1vh;
+    font-family: var(--crossword-font);
+}
+
+.clue-link {
+    padding: 1vh;
+    cursor: pointer;
+    scroll-margin-top: 10vh;
+}
+
+.clue-link-highlighted {
+    background-color: yellow;
+    border-radius: 2vh;
+}
+
+.clue-link-highlighted-preview {
+    background-color: white;
+    border-radius: 2vh;
+}
