@@ -189,6 +189,9 @@ button.off, button.off:hover {
   background-color: var(--secondary);
   border-radius: 20px;
   height: 100%;
+
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 #advent-calendar-container {

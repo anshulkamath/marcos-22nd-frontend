@@ -1,5 +1,5 @@
 const endpoint = ENDPOINT
-const DEBUG = true
+const debug = DEBUG === 'true'
 const DateTime = luxon.DateTime
 const key = 'marcos-22nd'
 
@@ -7,7 +7,7 @@ const puzzlePopulators = []
 const puzzleData = [null]
 
 const verifyDate = (day) => {
-  if (DEBUG) {
+  if (debug) {
     return true
   }
 
@@ -47,7 +47,7 @@ const handlePuzzleSubmit = async () => {
 
 const populateButtons = () => {
   puzzleData.forEach((datum, i) => {
-    if (i === 0) {
+    if (i === 0 || !verifyDate(i)) {
       return
     }
 
