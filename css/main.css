@@ -184,7 +184,7 @@ button.off, button.off:hover {
 }
 
 #marcos-blurb {
-  font-size: 1vw;
+  font-size: 12px;
   padding: 2vh;
   background-color: var(--secondary);
   border-radius: 20px;
