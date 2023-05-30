@@ -190,6 +190,8 @@ button.off, button.off:hover {
   border-radius: 20px;
   height: 100%;
 
+  border: 1px solid black;
+
   text-align: justify;
   text-justify: inter-word;
 }
