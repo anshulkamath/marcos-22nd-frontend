@@ -11,7 +11,7 @@ const verifyDate = (day) => {
     return true
   }
 
-  return DateTime.now() > DateTime.fromJSDate(new Date(`06/${day}/2023`))
+  return DateTime.now().setZone('America/New_York') > DateTime.fromJSDate(new Date(`06/${day}/2023`))
 }
 
 const handlePuzzleSubmit = async () => {
