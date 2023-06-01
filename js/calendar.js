@@ -139,10 +139,6 @@ const closeModal = () => {
 }
 
 const setup = async () => {
-  if (!getCookie(key)) {
-    setCookie(key, 'starter pack', 30)
-  }
-
   $(document).on('keypress', (e) => {
     if (e.key === "Escape" && $('#modal-container').hasClass('opened')) {
       closeModal()
