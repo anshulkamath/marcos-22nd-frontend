@@ -11,7 +11,7 @@ const verifyDate = (day) => {
     return true
   }
 
-  return DateTime.now().setZone('America/New_York') > DateTime.fromJSDate(new Date(`06/${day}/2023`))
+  return DateTime.local() > DateTime.fromJSDate(new Date(`06/${day}/2023`), { zone: 'America/New_York' })
 }
 
 const handlePuzzleSubmit = async () => {
@@ -27,6 +27,7 @@ const handlePuzzleSubmit = async () => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': window.localStorage.getItem('marcos-22nd')
     },
     body: JSON.stringify({ keyword: keywordGuess }),
   })
@@ -40,7 +41,7 @@ const handlePuzzleSubmit = async () => {
   $('#modal-body').append(`<div id="modal-alert" role="alert" class="alert ${alertType}">${data.message}</div>`)
 
   if (response.status === 200) {
-    setCookie(key, keywordGuess, 30)
+    window.localStorage.setItem('marcos-22nd', keywordGuess)
     $('#modal-submit').removeClass('primary').addClass('btn-secondary disabled')
   }
 }
@@ -65,7 +66,11 @@ const populateButtons = () => {
           return
         }
 
-        const response = await fetch(`${endpoint}/puzzle?day=${i}`)
+        const response = await fetch(`${endpoint}/puzzle?day=${i}`, {
+          headers: {
+            'Authorization': window.localStorage.getItem('marcos-22nd'),
+          }
+        })
         const blob = await response.blob()
         const _url = URL.createObjectURL(blob)
         window.open(_url, target='_blank')
@@ -108,7 +113,11 @@ const populateButtons = () => {
 }
 
 const getPuzzles = async () => {
-  const response = await fetch(`${endpoint}/puzzleMetadata`)
+  const response = await fetch(`${endpoint}/puzzleMetadata`, {
+    headers: {
+      'Authorization': window.localStorage.getItem('marcos-22nd')
+    }
+  })
 
   if (response.status !== 200) {
     console.error('Error occurred when fetching next puzzle metadata!')
@@ -139,6 +148,10 @@ const closeModal = () => {
 }
 
 const setup = async () => {
+  if (!window.localStorage.getItem('marcos-22nd')) {
+    window.localStorage.setItem('marcos-22nd', 'starter pack')
+  }
+
   $(document).on('keypress', (e) => {
     if (e.key === "Escape" && $('#modal-container').hasClass('opened')) {
       closeModal()
