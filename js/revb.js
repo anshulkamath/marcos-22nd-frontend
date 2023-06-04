@@ -175,6 +175,7 @@ const sendResponse = async () => {
     body: JSON.stringify({ score, round }),
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': window.localStorage.getItem('marcos-22nd'),
     }
   })
 

@@ -1,5 +1,4 @@
 const endpoint = ENDPOINT
-const debug = DEBUG === 'true'
 const DateTime = luxon.DateTime
 const key = 'marcos-22nd'
 
@@ -7,7 +6,7 @@ const puzzlePopulators = []
 const puzzleData = [null]
 
 const verifyDate = (day) => {
-  if (debug) {
+  if (isDebugMode()) {
     return true
   }
 
@@ -62,7 +61,8 @@ const populateButtons = () => {
       $('#start-puzzle').unbind('click').on('click', async function () {
         // if redirect, change window location
         if (redirect) {
-          window.open(redirect, '_blank')
+          window.sessionStorage.setItem('marcos-22nd', window.localStorage.getItem('marcos-22nd'))
+          window.open(`${redirect}?keyword=${window.localStorage.getItem('marcos-22nd')}`, '_blank')
           return
         }
 
