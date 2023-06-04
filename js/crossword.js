@@ -7,6 +7,7 @@ let clueMap
 let numRows
 let numCols
 let crossword
+let crosswordArr
 
 const getRow = (i) => parseInt(i / numRows)
 const getCol = (i) => i % numCols
@@ -22,6 +23,9 @@ const readIndex = (element, attr_key) => {
   
   return parseInt(element.attr(attr_key).match(/[0-9]+/g)[0])
 }
+const getIdx = ([row, col]) => row * numCols + col
+
+const CROSSWORD_KEY = 'marcos-22nd-crossword'
 
 const LEFT_ARROW = 37
 const UP_ARROW = 38
@@ -174,8 +178,23 @@ const inputClickHandler = (e) => {
   rotateInPlace()
 }
 
+const updateCrossword = (val = '_') => {
+  const elem = $(document.activeElement)
+
+  $(elem).val(val === '_' ? '' : val)
+
+  const idx = getIdx(readId(elem.attr('id')))
+  crosswordArr[idx] = val
+  window.localStorage.setItem(CROSSWORD_KEY, crosswordArr.join(''))
+
+}
+
 const populateCrossword = async () => {
-  const crosswordResponse = await fetch(`${ENDPOINT}/crossword`)
+  const crosswordResponse = await fetch(`${ENDPOINT}/crossword`, {
+    headers: {
+      'Authorization': window.localStorage.getItem('marcos-22nd'),
+    }
+  })
 
   if (crosswordResponse.status !== 200) {
     alert('Unauthorized access error while trying to access puzzle. Tell Anshul.')
@@ -188,7 +207,8 @@ const populateCrossword = async () => {
   downClues = data.downClues
 
   const { crosswordTemplate } = data
-  crossword = crosswordTemplate.join('')
+  crossword = window.localStorage.getItem(CROSSWORD_KEY) ?? crosswordTemplate.join('')
+  crosswordArr = crossword.split('')
   numRows = crosswordTemplate.length
   numCols = crosswordTemplate[0].length
 
@@ -203,10 +223,15 @@ const populateCrossword = async () => {
     clue.appendTo('#crossword-container')
     
     const input = clue.children(`#input-${id}`)
+    const char = crossword.charAt(i)
     
-    if (crossword.charAt(i) === '-') {
+    if (char === '-') {
       clue.addClass('grid-item-disabled')
       input.attr('disabled', 'disabled')
+    }
+
+    if (RegExp(/^[A-Z]$/).test(char)) {
+      input.val(char)
     }
   }
 
@@ -288,7 +313,7 @@ const onKeydown = (e) => {
   }
 
   if (A_KEY <= e.keyCode && e.keyCode <= Z_KEY) {
-    $(document.activeElement).val(e.key.toUpperCase())
+    updateCrossword(e.key.toUpperCase())
     shiftForward()
     return
   }
@@ -299,7 +324,7 @@ const onKeydown = (e) => {
       if (!val) {
         shiftBackward()
       }
-      $(document.activeElement).val('')
+      updateCrossword()
       break
     case SPACE:
       shiftForward()
@@ -374,12 +399,12 @@ const checkPuzzleCorrect = async () => {
   }
 
   if (submit) {
-    console.log('submitting')
     const response = await fetch(`${ENDPOINT}/crossword`, { 
       method: 'POST',
       body: JSON.stringify({ solution: puzzleSolution }),
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': window.localStorage.getItem('marcos-22nd')
       }
     })
 
