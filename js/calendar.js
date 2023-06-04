@@ -6,7 +6,7 @@ const puzzlePopulators = []
 const puzzleData = [null]
 
 const verifyDate = (day) => {
-  if (isDebugMode()) {
+  if (typeof isDebugMode !== 'undefined' && isDebugMode()) {
     return true
   }
 
