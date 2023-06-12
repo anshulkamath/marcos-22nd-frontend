@@ -112,6 +112,7 @@ const submit = async () => {
     const keyword = _.get(response, 'terminated.keyword')
     const resourceName = _.get(response, 'terminated.resourceName')
     window.localStorage.setItem('marcos-22nd', keyword)
+    setCookie('marcos-22nd', keyword, 30)
     window.location.href = `${resourceName}?keyword=${keyword}`
     return
   }
