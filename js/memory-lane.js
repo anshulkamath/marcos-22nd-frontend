@@ -106,14 +106,13 @@ const submit = async () => {
   }
 
   const fetchResponse = await fetch(endpoint, requestParams)
-  console.log(fetchResponse)
   const response = await fetchResponse.json()
   
   if (_.has(response, 'terminated')) {
     const keyword = _.get(response, 'terminated.keyword')
-    const resourceName = _.get(response, 'resourceName')
-    setCookie('marcos-22nd', keyword, 30)
-    window.location.href = resourceName
+    const resourceName = _.get(response, 'terminated.resourceName')
+    window.localStorage.setItem('marcos-22nd', keyword)
+    window.location.href = `${resourceName}?keyword=${keyword}`
     return
   }
   
@@ -182,6 +181,10 @@ const getSong = async (num_retries = 5) => {
   seenIds.add(songId)
 
   audioPlayer = new Audio(previewUrl)
+  if (!audioPlayer) {
+    await getSong(num_retries - 1)
+    return
+  }
 }
 
 const toggleButtons = () => {
@@ -198,9 +201,12 @@ const waitAndPlay = (duration) => {
 
 const playSong = (milliseconds) => {
   toggleButtons()
-  audioPlayer.play()
+
+  audioPlayer?.play()
+
   setTimeout(() => {
-    audioPlayer.pause()
+    audioPlayer?.pause()
+
     toggleButtons()
     if (level == 3) {
       $('#more-time').addClass('off')
