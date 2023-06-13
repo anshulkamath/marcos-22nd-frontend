@@ -26,7 +26,6 @@ const handlePuzzleSubmit = async () => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': window.localStorage.getItem('marcos-22nd')
     },
     body: JSON.stringify({ keyword: keywordGuess }),
   })
@@ -40,7 +39,6 @@ const handlePuzzleSubmit = async () => {
   $('#modal-body').append(`<div id="modal-alert" role="alert" class="alert ${alertType}">${data.message}</div>`)
 
   if (response.status === 200) {
-    window.localStorage.setItem('marcos-22nd', keywordGuess)
     $('#modal-submit').removeClass('primary').addClass('btn-secondary disabled')
   }
 }
@@ -61,16 +59,11 @@ const populateButtons = () => {
       $('#start-puzzle').unbind('click').on('click', async function () {
         // if redirect, change window location
         if (redirect) {
-          window.sessionStorage.setItem('marcos-22nd', window.localStorage.getItem('marcos-22nd'))
-          window.open(`${redirect}?keyword=${window.localStorage.getItem('marcos-22nd')}`, '_blank')
+          window.open(redirect, '_blank')
           return
         }
 
-        const response = await fetch(`${endpoint}/puzzle?day=${i}`, {
-          headers: {
-            'Authorization': window.localStorage.getItem('marcos-22nd'),
-          }
-        })
+        const response = await fetch(`${endpoint}/puzzle?day=${i}`)
         const blob = await response.blob()
         const _url = URL.createObjectURL(blob)
         window.open(_url, target='_blank')
@@ -113,11 +106,7 @@ const populateButtons = () => {
 }
 
 const getPuzzles = async () => {
-  const response = await fetch(`${endpoint}/puzzleMetadata`, {
-    headers: {
-      'Authorization': window.localStorage.getItem('marcos-22nd')
-    }
-  })
+  const response = await fetch(`${endpoint}/puzzleMetadata`)
 
   if (response.status !== 200) {
     console.error('Error occurred when fetching next puzzle metadata!')
@@ -148,8 +137,18 @@ const closeModal = () => {
 }
 
 const setup = async () => {
-  if (!window.localStorage.getItem('marcos-22nd')) {
-    window.localStorage.setItem('marcos-22nd', 'starter pack')
+  if (window.localStorage.getItem('marcos-22nd')) {
+    // update cookie via backend if localStorage is valid
+    const updateCookieResponse = await fetch(`${endpoint}/puzzle`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': window.localStorage.getItem(key),
+      },
+    })
+
+    if (updateCookieResponse.status === 201) {
+      window.localStorage.removeItem(key)
+    }
   }
 
   $(document).on('keypress', (e) => {
@@ -187,6 +186,6 @@ const setup = async () => {
 }
 
 jQuery(async function () {
-  setup()
+  await setup()
   await getPuzzles()
 })
